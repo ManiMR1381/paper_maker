@@ -8,7 +8,7 @@ from typing import List
 app = FastAPI()
 
 # Configure Gemini API
-genai.configure(api_key="AIzaSyDrNErdtvDWfQzNXMTljil6Zbcy96Sdlr0")
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Pydantic models for request validation
 class OutlineRequest(BaseModel):

@@ -1,14 +1,31 @@
 import os
 import json
+import logging
 import google.generativeai as genai
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 app = FastAPI()
 
-# Configure Gemini API
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+# Verify API key on startup
+api_key = os.getenv("GEMINI_API_KEY")
+if not api_key:
+    logger.error("GEMINI_API_KEY environment variable is not set!")
+    raise ValueError("GEMINI_API_KEY environment variable is not set!")
+
+logger.info("Configuring Gemini API...")
+genai.configure(api_key=api_key)
+logger.info("Gemini API configured successfully")
+
+@app.get("/")
+async def root():
+    """Health check endpoint"""
+    return {"status": "alive", "message": "API is running"}
 
 # Pydantic models for request validation
 class OutlineRequest(BaseModel):
